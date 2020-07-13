@@ -36,6 +36,18 @@ const HelloWorldIntentHandler = {
     }
 };
 
+const TestIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'Test';
+    },
+    handle(handlerInput) {
+        return handlerInput.responseBuilder
+            .speak("The test was successful")
+            .getResponse();
+    }
+};
+
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -158,8 +170,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         HelloWorldIntentHandler,
-        HelpIntentHandler,
-        CancelAndStopIntentHandler,
+        TestIntentHandler,
         FallbackIntentHandler,
         SessionEndedRequestHandler,
         IntentReflectorHandler)
