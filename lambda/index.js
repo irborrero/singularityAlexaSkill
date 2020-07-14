@@ -5,33 +5,15 @@
  * */
 const Alexa = require('ask-sdk-core');
 const i18n = require('i18next');
-const languageStrings = require('./languageStrings');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('WELCOME_MSG');
-
         return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
-            .getResponse();
-    }
-};
-
-const HelloWorldIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
-    },
-    handle(handlerInput) {
-        const speakOutput = handlerInput.t('HELLO_MSG');
-
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .speak("Welcome to our quiz skill")
+            .reprompt("Welcome to our quiz skill")
             .getResponse();
     }
 };
@@ -54,11 +36,9 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('HELP_MSG');
-
         return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
+            .speak("Help intent!")
+            .reprompt("Repromprt for help intent!")
             .getResponse();
     }
 };
@@ -70,10 +50,8 @@ const CancelAndStopIntentHandler = {
                 || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('GOODBYE_MSG');
-
         return handlerInput.responseBuilder
-            .speak(speakOutput)
+            .speak("Goodbye handler")
             .getResponse();
     }
 };
@@ -88,11 +66,9 @@ const FallbackIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('FALLBACK_MSG');
-
         return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
+            .speak("Fallback handler")
+            .reprompt("Fallback handler reprommpt")
             .getResponse();
     }
 };
@@ -140,27 +116,27 @@ const ErrorHandler = {
         return true;
     },
     handle(handlerInput, error) {
-        const speakOutput = handlerInput.t('ERROR_MSG');
         console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
 
         return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
+            .speak("Error handler")
+            .reprompt("Error handler reprompt")
             .getResponse();
     }
 };
 
 // This request interceptor will bind a translation function 't' to the handlerInput
-const LocalisationRequestInterceptor = {
-    process(handlerInput) {
-        i18n.init({
-            lng: Alexa.getLocale(handlerInput.requestEnvelope),
-            resources: languageStrings
-        }).then((t) => {
-            handlerInput.t = (...args) => t(...args);
-        });
-    }
-};
+// const LocalisationRequestInterceptor = {
+//     process(handlerInput) {
+//         i18n.init({
+//             lng: Alexa.getLocale(handlerInput.requestEnvelope),
+//             resources: languageStrings
+//         }).then((t) => {
+//             handlerInput.t = (...args) => t(...args);
+//         });
+//     }
+// };
+
 /**
  * This handler acts as the entry point for your skill, routing all request and response
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
@@ -169,14 +145,13 @@ const LocalisationRequestInterceptor = {
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
-        HelloWorldIntentHandler,
         TestIntentHandler,
         FallbackIntentHandler,
         SessionEndedRequestHandler,
         IntentReflectorHandler)
     .addErrorHandlers(
         ErrorHandler)
-    .addRequestInterceptors(
-        LocalisationRequestInterceptor)
+    /*.addRequestInterceptors(
+        LocalisationRequestInterceptor) */
     .withCustomUserAgent('sample/hello-world/v1.2')
     .lambda();
