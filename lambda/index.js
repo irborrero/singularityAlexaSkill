@@ -4,7 +4,23 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
+const ddbAdapter = require('ask-sdk-dynamodb-persistence-adapter');
 const i18n = require('i18next');
+
+const numbersGame = require("./numbers_game");
+const factsGame = require("./facts_game");
+
+function getQuestion(quizType) {
+    switch (quizType) {
+        case "numbers": {
+            return numbersGame.getQuestion();
+        }
+        case "facts": {
+            return factsGame.getQuestion();
+        }
+    }
+    return "";
+}
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -13,19 +29,27 @@ const LaunchRequestHandler = {
     handle(handlerInput) {
         return handlerInput.responseBuilder
             .speak("Welcome to our quiz skill")
-            .reprompt("Welcome to our quiz skill")
+            .reprompt("What type of quiz do you want? numbers or facts")
             .getResponse();
     }
 };
 
-const TestIntentHandler = {
+const StartQuizHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'Test';
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StartQuiz';
     },
     handle(handlerInput) {
+        const { attributesManager } = handlerInput;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+    
+        sessionAttributes.quizType = Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype");
+        
+        const question = getQuestion(sessionAttributes.quizType);
+        sessionAttributes.questionId = question.id;
         return handlerInput.responseBuilder
-            .speak("The test was successful")
+            .speak("Okay, let's start the " + Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") + " quiz")
+            .speak(question.question)
             .getResponse();
     }
 };
@@ -137,16 +161,26 @@ const ErrorHandler = {
 //     }
 // };
 
+function getPersistenceAdapter(tableName) {  
+    // Not in Alexa Hosted Environment
+    return new ddbAdapter.DynamoDbPersistenceAdapter({
+        tableName: tableName,
+        createTable: true,
+    });
+}
+
 /**
  * This handler acts as the entry point for your skill, routing all request and response
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
  * defined are included below. The order matters - they're processed top to bottom
  * */
 exports.handler = Alexa.SkillBuilders.custom()
+    .withPersistenceAdapter(getPersistenceAdapter("intern-quiz"))
     .addRequestHandlers(
         LaunchRequestHandler,
-        TestIntentHandler,
+        StartQuizHandler,
         FallbackIntentHandler,
+        numbersGame.NumberGuessHandler,
         SessionEndedRequestHandler,
         IntentReflectorHandler)
     .addErrorHandlers(
