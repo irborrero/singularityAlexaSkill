@@ -75,7 +75,7 @@ module.exports = {
                 //next question
                 const nextQuestion = questions[sessionAttributes.questionId]
                 return handlerInput.responseBuilder
-                    .speak(speachOutput + ". " + nextQuestion.question)
+                    .speak(speachOutput + ". Let's go for the next question. " + nextQuestion.question)
                     .reprompt("Try guessing again!")
                     .getResponse();
             }
