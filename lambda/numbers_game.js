@@ -4,7 +4,7 @@ const questions = [
     { id: 0, question: "How many employees are there at Amazon?", answer: 840000, acceptableRangeLow: 800000, acceptableRangeHigh: 900000 },
     { id: 1, question: "How many packages are delivered by Amazon every year?", answer: 2500000000, acceptableRangeLow: 2000000000, acceptableRangeHigh: 3000000000 },
     { id: 2, question: "How many different brands does Amazon own?", answer: 41, acceptableRangeLow: 40, acceptableRangeHigh: 45 },
-    { id: 2, question: "How many prime subscribers on 2020? Hint: it’s a 9 figures number.", answer: 150000000, acceptableRangeLow: 140000000, acceptableRangeHigh: 160000000 }
+    { id: 3, question: "How many prime subscribers on 2020? Hint: it’s a 9 figures number.", answer: 150000000, acceptableRangeLow: 140000000, acceptableRangeHigh: 160000000 }
 ];
 
 
