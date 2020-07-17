@@ -4,7 +4,6 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
-const ddbAdapter = require('ask-sdk-dynamodb-persistence-adapter');
 const i18n = require('i18next');
 
 const numbersGame = require("./numbers_game");
@@ -22,6 +21,19 @@ function getQuestion(quizType) {
     return "";
 }
 
+function getQuestionForRepeat(quizType, questionId) {
+    switch (quizType) {
+        case "numbers": {
+            return numbersGame.getQuestionForRepeat(questionId);
+        }
+        case "facts": {
+            return factsGame.getQuestion();
+        }
+    }
+    return "";
+}
+
+
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
@@ -30,7 +42,9 @@ const LaunchRequestHandler = {
         const { attributesManager } = handlerInput;
         const sessionAttributes = attributesManager.getSessionAttributes();
 
-        sessionAttributes.quizType = null;
+        sessionAttributes.quizType = null; //quiz user is playing
+        sessionAttributes.questionsAnswered = []; //questions the user has answered
+        sessionAttributes.questionId = null; //question that is currently being asked
 
         return handlerInput.responseBuilder
             .speak("Welcome to our quiz skill! What do you want to do? Start a numbers or a facts quiz?")
@@ -52,10 +66,10 @@ const StartQuizHandler = {
         const { attributesManager } = handlerInput;
         const sessionAttributes = attributesManager.getSessionAttributes();
     
-        sessionAttributes.quizType = Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype");
-        
+        sessionAttributes.quizType = Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype"); //seting the quiz that is going to be played
         const question = getQuestion(sessionAttributes.quizType);
-        sessionAttributes.questionId = question.id;
+        sessionAttributes.questionId = question.id; //setting first question
+
         return handlerInput.responseBuilder
             .speak("Okay, let's start the " + Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") + " quiz! " + question.question)
             .reprompt("Try making a guess!")
@@ -148,7 +162,7 @@ const ErrorHandler = {
         return true;
     },
     handle(handlerInput, error) {
-        console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
+        console.log(`~~~~ Error handled: ${error}`);
 
         return handlerInput.responseBuilder
             .speak("Error handler")
@@ -169,13 +183,6 @@ const ErrorHandler = {
 //     }
 // };
 
-function getPersistenceAdapter(tableName) {  
-    // Not in Alexa Hosted Environment
-    return new ddbAdapter.DynamoDbPersistenceAdapter({
-        tableName: tableName,
-        createTable: true,
-    });
-}
 
 /**
  * This handler acts as the entry point for your skill, routing all request and response
@@ -183,7 +190,6 @@ function getPersistenceAdapter(tableName) {
  * defined are included below. The order matters - they're processed top to bottom
  * */
 exports.handler = Alexa.SkillBuilders.custom()
-    .withPersistenceAdapter(getPersistenceAdapter("intern-quiz"))
     .addRequestHandlers(
         LaunchRequestHandler,
         StartQuizHandler,
