@@ -18,7 +18,7 @@ module.exports = {
 
             return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
                 && Alexa.getIntentName(handlerInput.requestEnvelope) === 'NumberGuess'
-                && sessionAttributes.quizType == "numbers";;
+                && sessionAttributes.quizType == "numbers";
         },
         handle(handlerInput) {
             const { attributesManager } = handlerInput;
@@ -26,7 +26,7 @@ module.exports = {
 
             const question = questions[sessionAttributes.questionId];
 
-            let speachOutput = "Unknown answer";
+            let speachOutput = "Sorry I did not understand. Try guessing a number";
             if (Alexa.getSlotValue(handlerInput.requestEnvelope, "number")) {
                 const guess = parseInt(Alexa.getSlotValue(handlerInput.requestEnvelope, "number"));
                 if (guess == question.answer) {

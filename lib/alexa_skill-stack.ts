@@ -6,6 +6,7 @@ export class AlexaSkillStack extends cdk.Stack {
     super(scope, id, props);
 
     const lambda = new Function(this, "lambda", {
+      functionName: "alexaSkillInterQuizGame",
       runtime: Runtime.NODEJS_10_X,    // execution environment
       code: Code.fromAsset('lambda'),  // code loaded from "lambda" directory
       handler: 'index.handler'                // file is "hello", function is "handler"
