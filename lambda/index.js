@@ -27,17 +27,26 @@ const LaunchRequestHandler = {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
+        const { attributesManager } = handlerInput;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+
+        sessionAttributes.quizType = null;
+
         return handlerInput.responseBuilder
-            .speak("Welcome to our quiz skill")
-            .reprompt("What type of quiz do you want? numbers or facts")
+            .speak("Welcome to our quiz skill! What do you want to do? Start a numbers or a facts quiz?")
+            .reprompt("Try saying what quiz you want me to start")
             .getResponse();
     }
 };
 
 const StartQuizHandler = {
     canHandle(handlerInput) {
+        const { attributesManager } = handlerInput;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StartQuiz';
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StartQuiz'
+            && !sessionAttributes.quizType;
     },
     handle(handlerInput) {
         const { attributesManager } = handlerInput;
@@ -48,8 +57,8 @@ const StartQuizHandler = {
         const question = getQuestion(sessionAttributes.quizType);
         sessionAttributes.questionId = question.id;
         return handlerInput.responseBuilder
-            .speak("Okay, let's start the " + Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") + " quiz")
-            .speak(question.question)
+            .speak("Okay, let's start the " + Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") + " quiz! " + question.question)
+            .reprompt("Try making a guess!")
             .getResponse();
     }
 };
@@ -92,7 +101,6 @@ const FallbackIntentHandler = {
     handle(handlerInput) {
         return handlerInput.responseBuilder
             .speak("Fallback handler")
-            .reprompt("Fallback handler reprommpt")
             .getResponse();
     }
 };
