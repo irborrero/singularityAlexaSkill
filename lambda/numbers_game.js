@@ -32,15 +32,12 @@ module.exports = {
         return questions[questionId];
     },
 
-    getQuestionForRepeat: function getQuestionForRepeat(questionId) {
-        return questions[questionId];
-    },
-
     NumberGuessHandler: {
 
         canHandle(handlerInput) {
             const { attributesManager } = handlerInput;
             const sessionAttributes = attributesManager.getSessionAttributes();
+
             return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
                 && Alexa.getIntentName(handlerInput.requestEnvelope) === 'NumberGuess'
                 && sessionAttributes.quizType == "numbers";
