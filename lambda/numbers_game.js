@@ -40,7 +40,7 @@ module.exports = {
 
             return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
                 && Alexa.getIntentName(handlerInput.requestEnvelope) === 'NumberGuess'
-                && sessionAttributes.quizType == "numbers";
+                && sessionAttributes.quizType === "numbers";
         },
 
         handle(handlerInput) {
@@ -53,7 +53,7 @@ module.exports = {
             let correctAnswer = false;
             if (Alexa.getSlotValue(handlerInput.requestEnvelope, "number")) {
                 const guess = parseInt(Alexa.getSlotValue(handlerInput.requestEnvelope, "number"));
-                if (guess == question.answer) {
+                if (guess === question.answer) {
                     speachOutput = "You guessed exactly right!";
                     correctAnswer = true;
                     pickNextQuestion(sessionAttributes);

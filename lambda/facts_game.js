@@ -50,6 +50,7 @@ function pickNextQuestion(sessionAttributes) {
     }
 }
 
+
 module.exports = {
 
     getQuestion: function getQuestion() {
@@ -57,26 +58,32 @@ module.exports = {
         return questions[questionId];
     },
 
-    TrueHandler: {
+    FactGuessHandler: {
         canHandle(handlerInput) {
             const { attributesManager } = handlerInput;
             const sessionAttributes = attributesManager.getSessionAttributes();
 
             return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-                && Alexa.getIntentName(handlerInput.requestEnvelope) === 'TrueGuess'
-                && sessionAttributes.quizType == "facts";
+                && Alexa.getIntentName(handlerInput.requestEnvelope) === 'FactTrueFalse'
+                && sessionAttributes.quizType === "facts";
         },
         handle(handlerInput) {
             const {attributesManager} = handlerInput;
             const sessionAttributes = attributesManager.getSessionAttributes();
 
-            let speechOutput = questions[sessionAttributes.questionId].true;
+            const guess = Alexa.getSlotValue(handlerInput.requestEnvelope, "factGuess").toString();
+            let speechOutput = "hello";
+            if(guess === "true")
+               speechOutput = questions[sessionAttributes.questionId].true;
+            else
+                speechOutput = questions[sessionAttributes.questionId].false;
+
             pickNextQuestion(sessionAttributes)
 
-                return handlerInput.responseBuilder
-                    .speak(speechOutput + ". Next question: " + questions[sessionAttributes.questionId].question)
-                    .reprompt("Try making a guess!")
-                    .getResponse();
+            return handlerInput.responseBuilder
+                .speak(speechOutput + ". Next question: " + questions[sessionAttributes.questionId].question)
+                .reprompt("Try making a guess!")
+                .getResponse();
         }
     }
 };

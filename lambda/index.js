@@ -191,7 +191,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         StartQuizHandler,
         FallbackIntentHandler,
         numbersGame.NumberGuessHandler,
-        factsGame.TrueHandler,
+        factsGame.FactGuessHandler,
         SessionEndedRequestHandler,
         IntentReflectorHandler)
     .addErrorHandlers(
