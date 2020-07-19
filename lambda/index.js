@@ -12,18 +12,29 @@ const i18n = require('i18next');
 const numbersGame = require("./numbers_game");
 const factsGame = require("./facts_game");
 
-function getQuestion(quizType) {
-    switch (quizType) {
+function pickFirstQuestion(sessionAttributes) {
+    switch (sessionAttributes.quizType) {
         case "numbers": {
-            return numbersGame.getQuestion();
+            return numbersGame.pickFirstQuestion(sessionAttributes);
         }
         case "facts": {
-            return factsGame.getQuestion();
+            return factsGame.pickFirstQuestion(sessionAttributes);
         }
     }
     return "";
 }
 
+function getQuestion(quizType, questionId) {
+    switch (quizType) {
+        case "numbers": {
+            return numbersGame.getQuestion(questionId);
+        }
+        case "facts": {
+            return factsGame.getQuestion(questionId);
+        }
+    }
+    return "";
+}
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -56,11 +67,10 @@ const StartQuizHandler = {
         if(!sessionAttributes.quizType) {
             //TODO: Handle if the users says an unknown quiz type
             sessionAttributes.quizType = Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype"); //seting the quiz that is going to be played
-            const question = getQuestion(sessionAttributes.quizType);
-            sessionAttributes.questionId = question.id; //setting first question
+            pickFirstQuestion(sessionAttributes);
 
             return handlerInput.responseBuilder
-                .speak("Okay, let's start the " + Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") + " quiz! " + question.question)
+                .speak("Okay, let's start the " + Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") + " quiz! " + getQuestion(sessionAttributes.quizType, sessionAttributes.questionId))
                 .reprompt("Try making a guess!")
                 .getResponse();
         }
@@ -70,6 +80,27 @@ const StartQuizHandler = {
                 .reprompt("Try making a guess!")
                 .getResponse();
         }
+    }
+};
+
+
+const RepeatQuestionHandler = {
+    canHandle(handlerInput) {
+        const { attributesManager } = handlerInput;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RepeatQuestion'
+            && sessionAttributes.questionId;
+    },
+    handle(handlerInput) {
+        const { attributesManager } = handlerInput;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+
+        return handlerInput.responseBuilder
+            .speak("Okay, The question is: " + getQuestion(sessionAttributes.quizType, sessionAttributes.questionId))
+            .reprompt("Try making a guess!")
+            .getResponse();
     }
 };
 
@@ -190,6 +221,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         StartQuizHandler,
         FallbackIntentHandler,
+        RepeatQuestionHandler,
         numbersGame.NumberGuessHandler,
         factsGame.FactGuessHandler,
         SessionEndedRequestHandler,

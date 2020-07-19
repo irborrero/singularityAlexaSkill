@@ -8,7 +8,7 @@ const questions = [
 ];
 
 
-function pickNextQuestion(sessionAttributes) {
+function pickQuestion(sessionAttributes) {
     sessionAttributes.questionsAnswered.push(sessionAttributes.questionId);
 
     if(sessionAttributes.questionsAnswered.length === questions.length){
@@ -27,9 +27,13 @@ function pickNextQuestion(sessionAttributes) {
 
 
 module.exports = {
-    getQuestion: function getQuestion() {
-        const questionId = parseInt(Math.floor((Math.random() * questions.length)));
-        return questions[questionId];
+
+    pickFirstQuestion: function pickFirstQuestion(sessionAttributes) {
+        pickQuestion(sessionAttributes)
+    },
+
+    getQuestion: function getQuestion(questionId) {
+        return questions[questionId].question
     },
 
     NumberGuessHandler: {
@@ -56,11 +60,11 @@ module.exports = {
                 if (guess === question.answer) {
                     speachOutput = "You guessed exactly right!";
                     correctAnswer = true;
-                    pickNextQuestion(sessionAttributes);
+                    pickQuestion(sessionAttributes);
                 } else if (guess >= question.acceptableRangeLow && guess <= question.acceptableRangeHigh) {
                     speachOutput = "Ah! Close enough! The real answer is " + question.answer;
                     correctAnswer = true;
-                    pickNextQuestion(sessionAttributes);
+                    pickQuestion(sessionAttributes);
                 } else if (guess < question.answer) {
                     speachOutput = "Too low! Try guessing a higher number!";
                 } else if (guess > question.answer) {

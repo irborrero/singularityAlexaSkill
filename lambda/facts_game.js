@@ -11,7 +11,7 @@ const questions = [
         id: 1,
         question: "True or false? Jeff Bezos made his first sell 25 years ago. ",
         true: "Right! As Jeff began his business, the first thing Amazon sold was a book called Fluid Concepts and Creative Analogies by Doug Hofstadte. It was sold on April 3rd, 1995. You weren’t even born, maggot!",
-        false: "Yu loose ! As Jeff Bezos began his business, the first thing Amazon sold was a book called Fluid Concepts and Creative Analogies by Doug Hofstadte. It was sold on April 3rd, 1995. You weren’t even born, maggot !"
+        false: "You loose ! As Jeff Bezos began his business, the first thing Amazon sold was a book called Fluid Concepts and Creative Analogies by Doug Hofstadte. It was sold on April 3rd, 1995. You weren’t even born, maggot !"
     },
     {
         id: 2,
@@ -33,9 +33,8 @@ const questions = [
     }
 ];
 
-function pickNextQuestion(sessionAttributes) {
+function pickQuestion(sessionAttributes) {
     sessionAttributes.questionsAnswered.push(sessionAttributes.questionId);
-
     if(sessionAttributes.questionsAnswered.length === questions.length){
         //TODO: IMPLEMENT END GAME LOGIC
     }
@@ -53,9 +52,12 @@ function pickNextQuestion(sessionAttributes) {
 
 module.exports = {
 
-    getQuestion: function getQuestion() {
-        const questionId = parseInt(Math.floor((Math.random() * questions.length)));
-        return questions[questionId];
+    pickFirstQuestion: function pickFirstQuestion(sessionAttributes) {
+        pickQuestion(sessionAttributes)
+    },
+
+    getQuestion: function getQuestion(questionId) {
+        return questions[questionId].question
     },
 
     FactGuessHandler: {
@@ -78,7 +80,7 @@ module.exports = {
             else
                 speechOutput = questions[sessionAttributes.questionId].false;
 
-            pickNextQuestion(sessionAttributes)
+            pickQuestion(sessionAttributes)
 
             return handlerInput.responseBuilder
                 .speak(speechOutput + ". Next question: " + questions[sessionAttributes.questionId].question)
