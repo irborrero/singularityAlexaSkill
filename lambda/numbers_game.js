@@ -9,12 +9,14 @@ const questions = [
 
 
 function pickQuestion(sessionAttributes) {
-    sessionAttributes.questionsAnswered.push(sessionAttributes.questionId);
-
-    if(sessionAttributes.questionsAnswered.length === questions.length){
-        //TODO: IMPLEMENT END GAME LOGIC
+    if (sessionAttributes.questionId >= 0) {
+        sessionAttributes.questionsAnswered.push(sessionAttributes.questionId);
     }
-    else {
+
+    if (sessionAttributes.questionsAnswered.length === questions.length) {
+        sessionAttributes.quizType = null;
+        sessionAttributes.questionId = -1;
+    } else {
         //selecting next question that has not been asked
         let nextQuestionId = parseInt(Math.floor((Math.random() * questions.length)));
         while (sessionAttributes.questionsAnswered.includes(nextQuestionId)){
@@ -28,11 +30,11 @@ function pickQuestion(sessionAttributes) {
 
 module.exports = {
 
-    pickFirstQuestion: function pickFirstQuestion(sessionAttributes) {
+    pickFirstQuestion: function(sessionAttributes) {
         pickQuestion(sessionAttributes)
     },
 
-    getQuestion: function getQuestion(questionId) {
+    getQuestion: function(questionId) {
         return questions[questionId].question
     },
 
@@ -72,9 +74,16 @@ module.exports = {
                 }
             }
 
-            if(correctAnswer){
+            if(correctAnswer) {
+                if (sessionAttributes.questionId < 0) {
+                    return handlerInput.responseBuilder
+                        .speak("Great job! You have completed all the question in this category! You can either stop or start a new quiz. What do you want to do?")
+                        .reprompt("Do you want to stop or start a new quiz?")
+                        .getResponse();
+                }
+
                 //next question
-                const nextQuestion = questions[sessionAttributes.questionId]
+                const nextQuestion = questions[sessionAttributes.questionId];
                 return handlerInput.responseBuilder
                     .speak(speachOutput + ". Let's go for the next question. " + nextQuestion.question)
                     .reprompt("Try guessing again!")

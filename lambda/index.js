@@ -46,7 +46,7 @@ const LaunchRequestHandler = {
 
         sessionAttributes.quizType = null; //quiz user is playing
         sessionAttributes.questionsAnswered = []; //questions the user has answered
-        sessionAttributes.questionId = null; //question that is currently being asked
+        sessionAttributes.questionId = -1; //question that is currently being asked
 
         return handlerInput.responseBuilder
             .speak("Welcome to our quiz skill! What do you want to do? Start a numbers or a facts quiz?")
@@ -125,7 +125,7 @@ const CancelAndStopIntentHandler = {
     },
     handle(handlerInput) {
         return handlerInput.responseBuilder
-            .speak("Goodbye handler")
+            .speak("Goodbye!")
             .getResponse();
     }
 };
@@ -220,6 +220,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
         StartQuizHandler,
+        CancelAndStopIntentHandler,
         FallbackIntentHandler,
         RepeatQuestionHandler,
         numbersGame.NumberGuessHandler,
