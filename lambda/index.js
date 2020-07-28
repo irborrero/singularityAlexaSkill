@@ -232,7 +232,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         factsGame.FactGuessHandler,
         acronymGame.AcronymGuessHandler,
         SessionEndedRequestHandler,
-        IntentReflectorHandler)
+        /* IntentReflectorHandler */)
     .addErrorHandlers(
         ErrorHandler)
     /*.addRequestInterceptors(
