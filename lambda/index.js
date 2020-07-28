@@ -11,6 +11,7 @@ const i18n = require('i18next');
 
 const numbersGame = require("./numbers_game");
 const factsGame = require("./facts_game");
+const acronymGame = require("./acronym_game");
 
 function pickFirstQuestion(sessionAttributes) {
     switch (sessionAttributes.quizType) {
@@ -49,7 +50,7 @@ const LaunchRequestHandler = {
         sessionAttributes.questionId = -1; //question that is currently being asked
 
         return handlerInput.responseBuilder
-            .speak("Welcome to our quiz skill! What do you want to do? Start a numbers or a facts quiz?")
+            .speak("Welcome to our quiz skill! What do you want to do? Start a numbers, facts or an acronym quiz?")
             .reprompt("Try saying what quiz you want me to start")
             .getResponse();
     }
@@ -82,7 +83,6 @@ const StartQuizHandler = {
         }
     }
 };
-
 
 const RepeatQuestionHandler = {
     canHandle(handlerInput) {
@@ -225,6 +225,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         RepeatQuestionHandler,
         numbersGame.NumberGuessHandler,
         factsGame.FactGuessHandler,
+        acronymGame.AcronymGuessHandler,
         SessionEndedRequestHandler,
         IntentReflectorHandler)
     .addErrorHandlers(
