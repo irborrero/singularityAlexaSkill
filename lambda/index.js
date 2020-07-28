@@ -1,17 +1,10 @@
-/* *
- * This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK (v2).
- * Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
- * session persistence, api calls, and more.
- * */
-
-//TODO: Handle use case when user wants to repeat a quesiton.
-
 const Alexa = require('ask-sdk-core');
 const i18n = require('i18next');
 
 const numbersGame = require("./numbers_game");
 const factsGame = require("./facts_game");
-const acronymGame = require("./acronym_game");
+const acronymsGame = require("./acronyms");
+
 
 function pickFirstQuestion(sessionAttributes) {
     switch (sessionAttributes.quizType) {
@@ -22,7 +15,7 @@ function pickFirstQuestion(sessionAttributes) {
             return factsGame.pickFirstQuestion(sessionAttributes);
         }
         case "acronyms": {
-            return acronymGame.pickFirstQuestion(sessionAttributes);
+            return acronymsGame.pickFirstQuestion(sessionAttributes);
         }
     }
     return "";
@@ -37,7 +30,7 @@ function getQuestion(quizType, questionId) {
             return factsGame.getQuestion(questionId);
         }
         case "acronyms": {
-            return acronymGame.getQuestion(questionId);
+            return acronymsGame.getQuestion(questionId);
         }
     }
     return "";
@@ -56,7 +49,7 @@ const LaunchRequestHandler = {
         sessionAttributes.questionId = -1; //question that is currently being asked
 
         return handlerInput.responseBuilder
-            .speak("Welcome to our quiz skill! What do you want to do? Start a numbers, facts or an acronym quiz?")
+            .speak("Welcome to our quiz skill! Which quiz do you want to play? Your options are: facts, acronyms or numbers.")
             .reprompt("Try saying what quiz you want me to start")
             .getResponse();
     }
@@ -73,7 +66,7 @@ const StartQuizHandler = {
 
         if(!sessionAttributes.quizType) {
             //TODO: Handle if the users says an unknown quiz type
-            sessionAttributes.quizType = Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype"); //seting the quiz that is going to be played
+            sessionAttributes.quizType = Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype"); //setting the quiz that is going to be played
             pickFirstQuestion(sessionAttributes);
 
             return handlerInput.responseBuilder
@@ -103,7 +96,7 @@ const RepeatQuestionHandler = {
         const sessionAttributes = attributesManager.getSessionAttributes();
 
         return handlerInput.responseBuilder
-            .speak("Okay, The question is: " + getQuestion(sessionAttributes.quizType, sessionAttributes.questionId))
+            .speak("Okay. The question is: " + getQuestion(sessionAttributes.quizType, sessionAttributes.questionId))
             .reprompt("Try making a guess!")
             .getResponse();
     }
@@ -230,7 +223,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         RepeatQuestionHandler,
         numbersGame.NumberGuessHandler,
         factsGame.FactGuessHandler,
-        acronymGame.AcronymGuessHandler,
+        acronymsGame.AcronymGuessHandler,
         SessionEndedRequestHandler,
         /* IntentReflectorHandler */)
     .addErrorHandlers(

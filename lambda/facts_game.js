@@ -22,8 +22,8 @@ const questions = [
     {
         id: 3,
         question: "True or false? It is possible to use a door as a table.",
-        true: "You are totally in the right! It was the summer of 1995, back when Jeff Bezos could count his Amazon employees on one hand and those few employees needed desks. Bezos’ friend and employee number five, Nico Lovejoy, says Bezos himself found a scrappy, cost-effective solution right outside their doors.‘We happened to be across the street from a Home Depot,’ said Lovejoy. ‘He looked at desks for sale and looked at doors for sale, and the doors were a lot cheaper, so he decided to buy a door and put some legs on it’. Never forget, you can do a lot with few things",
-        false: "Please buy yourself some imagination! Everything is possible ! And about that door,  it was the summer of 1995, back when Jeff Bezos could count his Amazon employees on one hand and those few employees needed desks. Bezos’ friend and employee number five, Nico Lovejoy, says Bezos himself found a scrappy, cost-effective solution right outside their doors.‘We happened to be across the street from a Home Depot,’ said Lovejoy. ‘He looked at desks for sale and looked at doors for sale, and the doors were a lot cheaper, so he decided to buy a door and put some legs on it’"
+        true: "You are totally in the right! It was the summer of 1995, back when Jeff Bezos could count his Amazon employees on one hand and those few employees needed desks. Doors were a lot cheaper than desk, so he decided to put some legs on it.Never forget, you can do a lot with few things",
+        false: "Please buy yourself some imagination! Everything is possible ! And about that door,  it was the summer of 1995, back when Jeff Bezos could count his Amazon employees on one hand and those few employees needed desks. Doors were a lot cheaper than desk, so he decided to put some legs on it. Never forget, you can do a lot with few things"
     },
     {
         id: 4,
