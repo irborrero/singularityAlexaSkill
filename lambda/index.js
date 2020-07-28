@@ -21,6 +21,9 @@ function pickFirstQuestion(sessionAttributes) {
         case "facts": {
             return factsGame.pickFirstQuestion(sessionAttributes);
         }
+        case "acronyms": {
+            return acronymGame.pickFirstQuestion(sessionAttributes);
+        }
     }
     return "";
 }
@@ -32,6 +35,9 @@ function getQuestion(quizType, questionId) {
         }
         case "facts": {
             return factsGame.getQuestion(questionId);
+        }
+        case "acronyms": {
+            return acronymGame.getQuestion(questionId);
         }
     }
     return "";
@@ -74,8 +80,7 @@ const StartQuizHandler = {
                 .speak("Okay, let's start the " + Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") + " quiz! " + getQuestion(sessionAttributes.quizType, sessionAttributes.questionId))
                 .reprompt("Try making a guess!")
                 .getResponse();
-        }
-        else {
+        } else {
             return handlerInput.responseBuilder
                 .speak("You have already started the " + sessionAttributes.quizType + " quiz. Try to finish it first.")
                 .reprompt("Try making a guess!")

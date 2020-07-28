@@ -83,9 +83,9 @@ module.exports = {
                 }
             } else {
                 return handlerInput.responseBuilder
-                .speak(speechOutput + ". Next question: " + questions[sessionAttributes.questionId].question)
-                .reprompt("Try making a guess!")
-                .getResponse();
+                    .speak("That is not quite right, try again!")
+                    .reprompt("Try making a guess!")
+                    .getResponse();
             }
         }
     }
