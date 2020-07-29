@@ -3,7 +3,7 @@ const i18n = require('i18next');
 
 const numbersGame = require("./numbers_game");
 const factsGame = require("./facts_game");
-const acronymsGame = require("./acronyms");
+const acronymsGame = require("./acronyms_game");
 
 
 function pickFirstQuestion(sessionAttributes) {
@@ -89,7 +89,7 @@ const RepeatQuestionHandler = {
 
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'RepeatQuestion'
-            && sessionAttributes.questionId;
+            && sessionAttributes.questionId >= 0;
     },
     handle(handlerInput) {
         const { attributesManager } = handlerInput;
@@ -220,10 +220,10 @@ exports.handler = Alexa.SkillBuilders.custom()
         StartQuizHandler,
         CancelAndStopIntentHandler,
         FallbackIntentHandler,
-        RepeatQuestionHandler,
         numbersGame.NumberGuessHandler,
         factsGame.FactGuessHandler,
         acronymsGame.AcronymGuessHandler,
+        RepeatQuestionHandler,
         SessionEndedRequestHandler,
         /* IntentReflectorHandler */)
     .addErrorHandlers(

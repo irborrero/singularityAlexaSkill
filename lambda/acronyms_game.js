@@ -62,6 +62,7 @@ module.exports = {
                 && sessionAttributes.quizType === "acronyms";
         },
         handle(handlerInput) {
+
             const { attributesManager } = handlerInput;
             const sessionAttributes = attributesManager.getSessionAttributes();
 
