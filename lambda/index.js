@@ -50,6 +50,12 @@ const LaunchRequestHandler = {
 
         return handlerInput.responseBuilder
             .speak("Welcome to our quiz skill! Which quiz do you want to play? Your options are: facts, acronyms or numbers.")
+            .withStandardCard(
+                "Amazon Onboarding Quiz Game",
+                "Be peculiar!",
+                "https://alexa-singularity-skill-imagesbucket-hackaton2020.s3.amazonaws.com/image.png",
+                "https://alexa-singularity-skill-imagesbucket-hackaton2020.s3.amazonaws.com/image.png"
+                )
             .reprompt("Try saying what quiz you want me to start")
             .getResponse();
     }
