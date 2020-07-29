@@ -22,7 +22,7 @@ const questions = [
     {
         id: 3,
         question: "True or false? It is possible to use a door as a table.",
-        true: "You are totally in the right! It was the summer of 1995, back when Jeff Bezos could count his Amazon employees on one hand and those few employees needed desks. Doors were a lot cheaper than desk, so he decided to put some legs on it.Never forget, you can do a lot with few things",
+        true: "You are totally in the right! It was the summer of 1995, back when Jeff Bezos could count his Amazon employees on one hand and those few employees needed desks. Doors were a lot cheaper than desk, so he decided to put some legs on it. Never forget, you can do a lot with few things",
         false: "Please buy yourself some imagination! Everything is possible ! And about that door,  it was the summer of 1995, back when Jeff Bezos could count his Amazon employees on one hand and those few employees needed desks. Doors were a lot cheaper than desk, so he decided to put some legs on it. Never forget, you can do a lot with few things"
     },
     {
@@ -41,6 +41,7 @@ function pickQuestion(sessionAttributes) {
     if(sessionAttributes.questionsAnswered.length === questions.length){
         sessionAttributes.quizType = null;
         sessionAttributes.questionId = -1;
+        sessionAttributes.questionsAnswered = [];
     } else {
         //selecting next question that has not been asked
         let nextQuestionId = parseInt(Math.floor((Math.random() * questions.length)));
@@ -87,7 +88,7 @@ module.exports = {
 
             if (sessionAttributes.questionId < 0) {
                 return handlerInput.responseBuilder
-                    .speak("Great job! You have completed all the questions in this category! You can either stop or start a new quiz. What do you want to do?")
+                    .speak(speechOutput + ". Great job! You have completed all the questions in this category! You can either stop or start a new quiz. What do you want to do?")
                     .reprompt("Do you want to stop or start a new quiz?")
                     .getResponse();
             }

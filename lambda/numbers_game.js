@@ -16,6 +16,7 @@ function pickQuestion(sessionAttributes) {
     if (sessionAttributes.questionsAnswered.length === questions.length) {
         sessionAttributes.quizType = null;
         sessionAttributes.questionId = -1;
+        sessionAttributes.questionsAnswered = [];
     } else {
         //selecting next question that has not been asked
         let nextQuestionId = parseInt(Math.floor((Math.random() * questions.length)));

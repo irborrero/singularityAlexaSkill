@@ -26,6 +26,7 @@ const questions = [
 function pickQuestion(sessionAttributes) {
     if (sessionAttributes.questionId >= 0) {
         sessionAttributes.questionsAnswered.push(sessionAttributes.questionId);
+        sessionAttributes.questionsAnswered = [];
     }
 
     if(sessionAttributes.questionsAnswered.length === questions.length){

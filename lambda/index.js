@@ -18,7 +18,7 @@ function pickFirstQuestion(sessionAttributes) {
             return acronymsGame.pickFirstQuestion(sessionAttributes);
         }
     }
-    return "";
+    return "error";
 }
 
 function getQuestion(quizType, questionId) {
@@ -65,21 +65,35 @@ const StartQuizHandler = {
         const sessionAttributes = attributesManager.getSessionAttributes();
 
         if(!sessionAttributes.quizType) {
-            const question = pickFirstQuestion(sessionAttributes);
-            
-            if (question === "error") {
+            //QUIZ HAS NOT BEEN STARTED
+            if(Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") === "new" ||
+                Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") === "other" ||
+                Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") === "another"
+            ) {
                 return handlerInput.responseBuilder
-                .speak("I'm sorry, I don't recognize that quiz. The available types are numbers, facts or acronyms")
-                .reprompt("Try saying what quiz you want me to start!")
-                .getResponse();
-            } else {
-                sessionAttributes.quizType = Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype"); //setting the quiz that is going to be played
-                return handlerInput.responseBuilder
-                    .speak("Okay, let's start the " + Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") + " quiz! " + getQuestion(sessionAttributes.quizType, sessionAttributes.questionId))
-                    .reprompt("Try making a guess!")
+                    .speak("Which quiz do you want to play? Your options are: facts, acronyms or numbers.")
+                    .reprompt("Try saying what quiz you want me to start")
                     .getResponse();
+
+            } else {
+                sessionAttributes.quizType = Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype");
+                const question = pickFirstQuestion(sessionAttributes);
+
+                if (question === "error") {
+                    return handlerInput.responseBuilder
+                        .speak("I'm sorry, I don't recognize that quiz. The available types are numbers, facts or acronyms")
+                        .reprompt("Try saying what quiz you want me to start!")
+                        .getResponse();
+                } else {
+                    return handlerInput.responseBuilder
+                        .speak("Okay, let's start the " + Alexa.getSlotValue(handlerInput.requestEnvelope, "quiztype") + " quiz! " + getQuestion(sessionAttributes.quizType, sessionAttributes.questionId))
+                        .reprompt("Try making a guess!")
+                        .getResponse();
+                }
             }
+
         } else {
+            //QUIZ HAS STARTED
             return handlerInput.responseBuilder
                 .speak("You have already started the " + sessionAttributes.quizType + " quiz. Try to finish it first.")
                 .reprompt("Try making a guess!")
