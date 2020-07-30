@@ -59,7 +59,8 @@ module.exports = {
             const sessionAttributes = attributesManager.getSessionAttributes();
 
             return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-                && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AcronymGuess'
+                && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'NumberGuess' ||
+                    Alexa.getIntentName(handlerInput.requestEnvelope) === 'FactTrueFalse')
                 && sessionAttributes.quizType === "acronyms";
         },
         handle(handlerInput) {
@@ -67,7 +68,12 @@ module.exports = {
             const { attributesManager } = handlerInput;
             const sessionAttributes = attributesManager.getSessionAttributes();
 
-            const guess = Alexa.getSlotValue(handlerInput.requestEnvelope, "letterGuess").toString();
+            let guess = "";
+            if (Alexa.getIntentName(handlerInput.requestEnvelope) === 'NumberGuess') {
+                guess = Alexa.getSlotValue(handlerInput.requestEnvelope, "number").toString();
+            } else {
+                guess = Alexa.getSlotValue(handlerInput.requestEnvelope, "factGuess").toString();
+            }
 
             if (guess.toLowerCase() === questions[sessionAttributes.questionId].correct.toLowerCase()) {
                 pickQuestion(sessionAttributes);
